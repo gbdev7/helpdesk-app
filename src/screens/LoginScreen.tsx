@@ -21,6 +21,15 @@ export default function LoginScreen({ navigation }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  function saveServer() {
+    setBaseUrl(server).catch(() => undefined);
+  }
+
+  async function goToRegister() {
+    await setBaseUrl(server);
+    navigation.navigate('Register');
+  }
+
   async function handleLogin() {
     if (!email.trim() || !password) {
       setError('Informe e-mail e senha.');
@@ -64,6 +73,7 @@ export default function LoginScreen({ navigation }: Props) {
               label="Endereço da API"
               value={server}
               onChangeText={setServer}
+              onEndEditing={saveServer}
               autoCapitalize="none"
               keyboardType="url"
               placeholder="http://192.168.0.10:8080"
@@ -71,7 +81,7 @@ export default function LoginScreen({ navigation }: Props) {
           )}
 
           <Button title="Entrar" onPress={handleLogin} loading={loading} icon="log-in-outline" />
-          <Pressable onPress={() => navigation.navigate('Register')} style={{ marginTop: 16, alignItems: 'center' }}>
+          <Pressable onPress={goToRegister} style={{ marginTop: 16, alignItems: 'center' }}>
             <Text style={{ color: colors.primary, fontWeight: '600' }}>Não tem conta? Cadastre-se</Text>
           </Pressable>
         </View>

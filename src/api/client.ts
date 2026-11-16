@@ -65,7 +65,7 @@ async function request<T>(method: string, path: string, body?: unknown, auth = t
   } catch (e: any) {
     if (e instanceof ApiError) throw e;
     if (e?.name === 'AbortError') {
-      throw new ApiError('Tempo esgotado. Verifique o endereço do servidor e se o celular está na mesma rede.', 0);
+      throw new ApiError(`Tempo esgotado ao acessar ${baseUrl}. Verifique o endereço do servidor e se o celular está na mesma rede.`, 0);
     }
     throw new ApiError(`Não foi possível conectar em ${baseUrl}. Confira o endereço do servidor e a rede.`, 0);
   } finally {
