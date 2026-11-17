@@ -1,5 +1,13 @@
 # HelpDesk Mobile
 
+![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring%20Security-6.x-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Flyway](https://img.shields.io/badge/Flyway-Migrations-CC0000?style=for-the-badge&logo=flyway&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
+
 **Sistema de gerenciamento de chamados de suporte técnico**
 
 O HelpDesk Mobile é um aplicativo Android desenvolvido para facilitar o gerenciamento de solicitações de suporte técnico, permitindo que usuários abram chamados, acompanhem seu andamento e interajam com a equipe responsável pelo atendimento.
