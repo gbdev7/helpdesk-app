@@ -1,11 +1,11 @@
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useAuth } from '../auth/AuthContext';
-import { colors } from '../theme';
+import { Icon, IconName } from '../components/Icon';
+import { colors, fonts } from '../theme';
 import { RootStackParamList, TabParamList } from './types';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -18,7 +18,18 @@ import ProfileScreen from '../screens/ProfileScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
-const headerStyle = { headerStyle: { backgroundColor: colors.primary }, headerTintColor: '#fff', headerTitleStyle: { fontWeight: '700' as const } };
+const headerOptions = {
+  headerStyle: { backgroundColor: colors.primaryDark },
+  headerTintColor: '#fff',
+  headerShadowVisible: false,
+  headerTitleStyle: { fontFamily: fonts.bold, fontSize: 18 },
+};
+
+const tabIcons: Record<keyof TabParamList, IconName> = {
+  Tickets: 'ticket',
+  Users: 'users',
+  Profile: 'profile',
+};
 
 function Tabs() {
   const { session } = useAuth();
@@ -26,16 +37,30 @@ function Tabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        ...headerStyle,
+        ...headerOptions,
         tabBarActiveTintColor: colors.primary,
-        tabBarIcon: ({ color, size, focused }) => {
-          const icons = {
-            Tickets: focused ? 'ticket' : 'ticket-outline',
-            Users: focused ? 'people' : 'people-outline',
-            Profile: focused ? 'person-circle' : 'person-circle-outline',
-          } as const;
-          return <Ionicons name={icons[route.name]} size={size} color={color} />;
+        tabBarInactiveTintColor: colors.subtle,
+        tabBarLabelStyle: { fontFamily: fonts.semibold, fontSize: 11, marginBottom: 2 },
+        tabBarStyle: {
+          position: 'absolute',
+          left: 16,
+          right: 16,
+          bottom: 16,
+          height: 66,
+          paddingTop: 8,
+          paddingBottom: 8,
+          borderRadius: 26,
+          borderTopWidth: 0,
+          backgroundColor: '#fff',
+          elevation: 14,
+          shadowColor: '#1E1B4B',
+          shadowOpacity: 0.15,
+          shadowRadius: 20,
+          shadowOffset: { width: 0, height: 8 },
         },
+        tabBarIcon: ({ color, focused }) => (
+          <Icon name={tabIcons[route.name]} size={23} color={color} strokeWidth={focused ? 2.4 : 2} />
+        ),
       })}
     >
       <Tab.Screen name="Tickets" component={TicketsScreen} options={{ title: 'Chamados', tabBarLabel: 'Chamados' }} />
@@ -58,7 +83,7 @@ export default function Navigation() {
 
   return (
     <NavigationContainer theme={{ ...DefaultTheme, colors: { ...DefaultTheme.colors, background: colors.bg, primary: colors.primary } }}>
-      <Stack.Navigator screenOptions={headerStyle}>
+      <Stack.Navigator screenOptions={{ ...headerOptions, animation: 'slide_from_right' }}>
         {session ? (
           <>
             <Stack.Screen name="Main" component={Tabs} options={{ headerShown: false }} />

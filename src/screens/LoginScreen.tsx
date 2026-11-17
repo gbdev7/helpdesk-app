@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import {
-  KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAuth } from '../auth/AuthContext';
 import { getBaseUrl, setBaseUrl } from '../api/client';
+import { Text } from '../components/Text';
+import { Icon } from '../components/Icon';
 import { Button, ErrorBanner, Field } from '../components/ui';
-import { colors } from '../theme';
+import { colors, gradient, radius } from '../theme';
 import { RootStackParamList } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
@@ -48,54 +48,73 @@ export default function LoginScreen({ navigation }: Props) {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.primary }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <View style={styles.logoWrap}>
-          <View style={styles.logo}>
-            <Ionicons name="headset" size={40} color={colors.primary} />
+    <LinearGradient colors={gradient.login} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ flex: 1 }}>
+      <View style={[styles.blob, { width: 280, height: 280, top: -90, right: -90 }]} />
+      <View style={[styles.blob, { width: 200, height: 200, bottom: -60, left: -70 }]} />
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+          <View style={styles.logoWrap}>
+            <View style={styles.logo}>
+              <Icon name="headset" size={38} color={colors.primaryDark} strokeWidth={2.2} />
+            </View>
+            <Text style={styles.title}>HelpDesk</Text>
+            <Text style={styles.subtitle}>Central de chamados de suporte</Text>
           </View>
-          <Text style={styles.title}>HelpDesk</Text>
-          <Text style={styles.subtitle}>Central de chamados de suporte</Text>
-        </View>
 
-        <View style={styles.card}>
-          {error ? <ErrorBanner message={error} /> : null}
-          <Field label="E-mail" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="voce@email.com" />
-          <Field label="Senha" value={password} onChangeText={setPassword} secureTextEntry placeholder="••••••••" />
+          <View style={styles.card}>
+            <Text style={styles.welcome}>Bem-vindo de volta</Text>
+            <Text style={styles.welcomeSub}>Entre para acompanhar seus chamados</Text>
 
-          <Pressable onPress={() => setShowServer((v) => !v)} style={styles.serverToggle}>
-            <Ionicons name="server-outline" size={16} color={colors.muted} />
-            <Text style={{ color: colors.muted, fontSize: 13 }}>Servidor: {server}</Text>
-            <Ionicons name={showServer ? 'chevron-up' : 'chevron-down'} size={16} color={colors.muted} />
-          </Pressable>
-          {showServer && (
-            <Field
-              label="Endereço da API"
-              value={server}
-              onChangeText={setServer}
-              onEndEditing={saveServer}
-              autoCapitalize="none"
-              keyboardType="url"
-              placeholder="http://192.168.0.10:8080"
-            />
-          )}
+            {error ? <ErrorBanner message={error} /> : null}
+            <Field label="E-mail" icon="mail" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="voce@email.com" />
+            <Field label="Senha" icon="lock" value={password} onChangeText={setPassword} secureTextEntry placeholder="Sua senha" />
 
-          <Button title="Entrar" onPress={handleLogin} loading={loading} icon="log-in-outline" />
-          <Pressable onPress={goToRegister} style={{ marginTop: 16, alignItems: 'center' }}>
-            <Text style={{ color: colors.primary, fontWeight: '600' }}>Não tem conta? Cadastre-se</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <Pressable onPress={() => setShowServer((v) => !v)} style={styles.serverToggle} hitSlop={8}>
+              <Icon name="server" size={15} color={colors.muted} />
+              <Text style={{ color: colors.muted, fontSize: 12.5, flex: 1 }} numberOfLines={1}>Servidor: {server}</Text>
+              <Icon name={showServer ? 'up' : 'down'} size={16} color={colors.muted} />
+            </Pressable>
+            {showServer && (
+              <Field
+                label="Endereço da API"
+                icon="phone"
+                value={server}
+                onChangeText={setServer}
+                onEndEditing={saveServer}
+                autoCapitalize="none"
+                keyboardType="url"
+                placeholder="http://192.168.0.10:8080"
+              />
+            )}
+
+            <Button title="Entrar" onPress={handleLogin} loading={loading} icon="login" />
+            <Pressable onPress={goToRegister} style={{ marginTop: 18, alignItems: 'center' }} hitSlop={8}>
+              <Text style={{ color: colors.muted }}>
+                Não tem conta? <Text style={{ color: colors.primary, fontWeight: '700' }}>Cadastre-se</Text>
+              </Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flexGrow: 1, justifyContent: 'center', padding: 22 },
-  logoWrap: { alignItems: 'center', marginBottom: 28 },
-  logo: { width: 76, height: 76, borderRadius: 38, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
-  title: { fontSize: 30, fontWeight: '800', color: '#fff' },
-  subtitle: { color: '#C7D2FE', marginTop: 4 },
-  card: { backgroundColor: colors.bg, borderRadius: 20, padding: 20 },
-  serverToggle: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 14 },
+  blob: { position: 'absolute', borderRadius: 999, backgroundColor: 'rgba(255,255,255,0.07)' },
+  logoWrap: { alignItems: 'center', marginBottom: 26 },
+  logo: {
+    width: 78, height: 78, borderRadius: 26, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', marginBottom: 14,
+    shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8,
+  },
+  title: { fontSize: 32, fontWeight: '800', color: '#fff', letterSpacing: -0.5 },
+  subtitle: { color: '#C7D2FE', marginTop: 4, fontSize: 14 },
+  card: {
+    backgroundColor: '#fff', borderRadius: radius.xl, padding: 24,
+    shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 10,
+  },
+  welcome: { fontSize: 21, fontWeight: '800', color: colors.text },
+  welcomeSub: { color: colors.muted, marginTop: 2, marginBottom: 20, fontSize: 13.5 },
+  serverToggle: { flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 16 },
 });

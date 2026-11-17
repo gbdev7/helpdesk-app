@@ -23,8 +23,10 @@
           }
         }
       ],
-      "expo-font"
+      "expo-font",
+      "./plugins/withForceDarkDisabled"
     ],
-    "icon": "./assets/icon.png"
+    "icon": "./assets/icon.png",
+    "backgroundColor": "#F5F6FA"
   }
 }

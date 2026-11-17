@@ -1,61 +1,77 @@
 import React from 'react';
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../auth/AuthContext';
 import { getBaseUrl } from '../api/client';
-import { Badge, Button } from '../components/ui';
-import { colors, roleLabel } from '../theme';
+import { Text } from '../components/Text';
+import { Icon, IconName } from '../components/Icon';
+import { Avatar, Button } from '../components/ui';
+import { colors, gradient, radius, roleLabel, shadow } from '../theme';
 
 export default function ProfileScreen() {
   const { session, profile, signOut } = useAuth();
-  const name = profile?.name ?? session?.email ?? '';
+  const name = profile?.name ?? session?.email ?? 'Usuário';
 
   return (
-    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20 }}>
-      <View style={styles.card}>
-        <View style={styles.avatar}>
-          <Text style={{ color: '#fff', fontSize: 34, fontWeight: '800' }}>{name.charAt(0).toUpperCase()}</Text>
+    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
+      <LinearGradient colors={gradient.brand} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
+        <View style={styles.avatarRing}>
+          <Avatar name={name} size={86} />
         </View>
         <Text style={styles.name}>{profile?.name ?? 'Usuário'}</Text>
-        <Text style={{ color: colors.muted, marginBottom: 10 }}>{session?.email}</Text>
-        {session && <Badge label={roleLabel[session.role]} fg={colors.primary} bg={colors.primarySoft} />}
-      </View>
+        <Text style={{ color: '#C7D2FE', marginBottom: 12 }}>{session?.email}</Text>
+        {session && (
+          <View style={styles.rolePill}>
+            <Icon name={session.role === 'ADMIN' ? 'shield' : session.role === 'TECHNICIAN' ? 'wrench' : 'user'} size={14} color="#fff" />
+            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 13 }}>{roleLabel[session.role]}</Text>
+          </View>
+        )}
+      </LinearGradient>
 
-      <View style={styles.card2}>
-        <Row icon="server-outline" label="Servidor" value={getBaseUrl()} />
-        <Row icon="finger-print-outline" label="ID do usuário" value={String(session?.id ?? '-')} />
-        <Row icon="information-circle-outline" label="Versão do app" value="1.0.0" />
-      </View>
+      <View style={{ padding: 16 }}>
+        <View style={[styles.card, shadow]}>
+          <Row icon="server" label="Servidor" value={getBaseUrl()} />
+          <View style={styles.divider} />
+          <Row icon="fingerprint" label="ID do usuário" value={String(session?.id ?? '-')} />
+          <View style={styles.divider} />
+          <Row icon="info" label="Versão do app" value="1.0.0" />
+        </View>
 
-      <Button
-        title="Sair da conta"
-        variant="danger"
-        icon="log-out-outline"
-        onPress={() => Alert.alert('Sair', 'Deseja encerrar sua sessão?', [
-          { text: 'Cancelar', style: 'cancel' },
-          { text: 'Sair', style: 'destructive', onPress: signOut },
-        ])}
-      />
+        <Button
+          title="Sair da conta"
+          variant="danger"
+          icon="logout"
+          onPress={() => Alert.alert('Sair', 'Deseja encerrar sua sessão?', [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: 'Sair', style: 'destructive', onPress: signOut },
+          ])}
+        />
+      </View>
     </ScrollView>
   );
 }
 
-function Row({ icon, label, value }: { icon: keyof typeof Ionicons.glyphMap; label: string; value: string }) {
+function Row({ icon, label, value }: { icon: IconName; label: string; value: string }) {
   return (
     <View style={styles.row}>
-      <Ionicons name={icon} size={20} color={colors.primary} />
+      <View style={styles.rowIcon}>
+        <Icon name={icon} size={18} color={colors.primary} />
+      </View>
       <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 12, color: colors.muted }}>{label}</Text>
-        <Text style={{ fontWeight: '600', color: colors.text }}>{value}</Text>
+        <Text style={{ fontWeight: '600', color: colors.text }} numberOfLines={1}>{value}</Text>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: colors.card, borderRadius: 20, padding: 24, alignItems: 'center', marginBottom: 16 },
-  avatar: { width: 84, height: 84, borderRadius: 42, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
-  name: { fontSize: 22, fontWeight: '800', color: colors.text },
-  card2: { backgroundColor: colors.card, borderRadius: 20, padding: 16, marginBottom: 24, gap: 16 },
-  row: { flexDirection: 'row', gap: 12, alignItems: 'center' },
+  hero: { alignItems: 'center', paddingTop: 12, paddingBottom: 32, borderBottomLeftRadius: 32, borderBottomRightRadius: 32 },
+  avatarRing: { padding: 4, borderRadius: 60, backgroundColor: 'rgba(255,255,255,0.35)', marginBottom: 14 },
+  name: { fontSize: 22, fontWeight: '800', color: '#fff', marginBottom: 2 },
+  rolePill: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 14, paddingVertical: 7, borderRadius: 999 },
+  card: { backgroundColor: colors.card, borderRadius: radius.xl, padding: 18, marginBottom: 22 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 14 },
+  rowIcon: { width: 40, height: 40, borderRadius: 13, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' },
+  divider: { height: 1, backgroundColor: colors.border, marginVertical: 14 },
 });

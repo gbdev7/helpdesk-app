@@ -103,8 +103,8 @@ export const api = {
   createTicket: (title: string, description: string, priority: TicketPriority) =>
     request<Ticket>('POST', '/tickets', { title, description, priority }),
 
-  updateStatus: (id: number, status: TicketStatus, technicianId?: number | null) =>
-    request<Ticket>('PATCH', `/tickets/${id}/status`, { status, technicianId: technicianId ?? null }),
+  updateStatus: (id: number, status: TicketStatus, technicianId?: number | null, priority?: TicketPriority | null) =>
+    request<Ticket>('PATCH', `/tickets/${id}/status`, { status, technicianId: technicianId ?? null, priority: priority ?? null }),
 
   listComments: (id: number) => request<TicketComment[]>('GET', `/tickets/${id}/comments`),
   addComment: (id: number, content: string) =>
