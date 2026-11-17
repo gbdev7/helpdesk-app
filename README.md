@@ -263,11 +263,6 @@ Repositório da API: https://github.com/gbdev7/helpdesk-api
 
 **Gabriel Pereira da Silva**
 
-Projeto acadêmico desenvolvido no curso de Análise e Desenvolvimento de Sistemas (ADS).
-
-**Instituição:** UNIFAVIP Wyden  
-**Local:** Caruaru - Pernambuco
-
 GitHub: https://github.com/gbdev7
 
 ---
